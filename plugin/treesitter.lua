@@ -16,8 +16,8 @@ vim.pack.add({ { src = "https://github.com/nvim-treesitter/nvim-treesitter", ver
 -- Async and a no-op for parsers already installed, so cheap at startup
 require("nvim-treesitter").install({
   "bash", "css", "dart", "diff", "gitcommit", "html", "javascript", "json",
-  "lua", "markdown", "markdown_inline", "python", "query", "regex", "tsx",
-  "typescript", "vim", "vimdoc", "yaml",
+  "lua", "markdown", "markdown_inline", "python", "query", "regex", "rust", "toml",
+  "tsx", "typescript", "vim", "vimdoc", "yaml",
 })
 
 -- The main branch doesn't auto-enable anything; turn it on for any buffer with a parser

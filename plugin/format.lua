@@ -1,4 +1,4 @@
--- Formatting runs the project's real tools (prettier, ruff, dart format) instead of
+-- Formatting runs the project's real tools (prettier, ruff, dart format, rustfmt) instead of
 -- whatever the LSP ships, so output matches CI and teammates.
 vim.pack.add({ "https://github.com/stevearc/conform.nvim" })
 
@@ -13,6 +13,7 @@ require("conform").setup({
     python = { "ruff_organize_imports", "ruff_format" },
     dart = { "dart_format" },
     lua = { "stylua" },
+    rust = { "rustfmt" },
   },
   -- Toggleable because some repos aren't formatted and a save would rewrite whole files
   format_on_save = function()

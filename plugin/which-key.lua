@@ -15,4 +15,5 @@ wk.add({
   { "<leader>u", group = "ui toggles" },
   { "<leader>x", group = "diagnostics" },
   { "<leader>F", group = "flutter" },
+  { "<leader>R", group = "rust" },
 })
