@@ -16,6 +16,8 @@ require("mason-tool-installer").setup({
     "lua-language-server", "json-lsp", "yaml-language-server",
     -- formatters (used by plugin/format.lua)
     "prettierd", "stylua",
+    -- debug adapters (used by plugin/debug.lua and plugin/rust.lua)
+    "js-debug-adapter", "codelldb", -- debugpy comes via uv (see debug.lua)
   },
 })
 

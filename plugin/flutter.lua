@@ -7,6 +7,7 @@ vim.pack.add({
 
 require("flutter-tools").setup({
   fvm = true, -- respect a project's .fvm SDK; falls back to `flutter` on PATH
+  debugger = { enabled = true }, -- registers the `dart` adapter used by launch.json flavors
   widget_guides = { enabled = true },
   closing_tags = { enabled = true },
   lsp = {
