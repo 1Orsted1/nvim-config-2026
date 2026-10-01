@@ -1,6 +1,6 @@
 # Neovim config — context
 
-Neovim 0.12.5 on macOS (Ghostty). Daily languages: Node/TS, Flutter/Dart (via fvm), Python.
+Neovim 0.12.5 on macOS (Ghostty). Daily languages: Node/JS/TS, Flutter/Dart (via fvm), Python, Rust.
 Goal: as minimal as possible without losing features or comfort. Leader = Space.
 
 ## Architecture
@@ -12,6 +12,7 @@ Goal: as minimal as possible without losing features or comfort. Leader = Space.
   Build hooks go in a `PackChanged` autocmd *before* `vim.pack.add` (see `treesitter.lua`).
 - `after/lsp/<server>.lua` — per-server overrides, merged by native `vim.lsp.config`. Must be under `after/` to win over nvim-lspconfig's defaults.
 - Comments explain *why*, not *what*.
+- No custom implementations: plugins + their configuration only.
 
 | File | Concern |
 |---|---|
@@ -24,17 +25,20 @@ Goal: as minimal as possible without losing features or comfort. Leader = Space.
 | lsp.lua | lspconfig defaults + Mason (via mason-tool-installer) + `vim.lsp.enable` + LspAttach keymaps |
 | flutter.lua | flutter-tools: owns dartls (fvm-aware) + run/reload/devices |
 | completion.lua | blink.cmp (1.* prebuilt binary) + friendly-snippets |
-| format.lua | conform: prettierd / ruff / dart format / stylua, format-on-save toggle |
-| git.lua | gitsigns (hunks) + fugitive (status/commit/log/diff) |
+| format.lua | conform: prettierd (only with a prettier config in the project) / ruff / dart format / stylua / rustfmt, format-on-save toggle |
+| git.lua | gitsigns (hunks) + fugitive (status/commit/log) + diffview (review changes, history) |
+| debug.lua | nvim-dap + nvim-dap-view (UI + inline values), js-debug, dap-python via uv; reads `.vscode/launch.json` from cwd |
+| rust.lua | rustaceanvim: owns rust-analyzer (rustup), clippy on save, runnables, codelldb debugging |
 | mini.lua | icons (+ devicons mock for nvim-tree), pairs, surround, ai, statusline |
 
-Servers: vtsls, eslint, pyright, ruff, lua_ls, jsonls, yamlls (Mason) + dartls (Flutter SDK).
-pyright, not basedpyright: Mason's basedpyright needs Python ≥3.10 and system python3 is 3.9.
+Servers: vtsls, eslint, pyright, ruff, lua_ls, jsonls, yamlls (Mason) + dartls (Flutter SDK) + rust-analyzer (rustup).
+Debug adapters: js-debug-adapter, codelldb (Mason); dart (flutter-tools, registered on first .dart/pubspec BufEnter); debugpy via `uv run --with debugpy`.
+Mason can't install *any* pypi package (needs Python ≥3.10, system python3 is 3.9) — hence pyright (npm) over basedpyright, and uv for debugpy.
 
 ## Maintenance
 - Update plugins: `<leader>pu`. Mason tools: `:Mason`. Parsers: `:TSUpdate`.
 - Remove plugin: delete its file + `:lua vim.pack.del({ "name" })`.
-- External deps (Homebrew): `tree-sitter-cli`, `ripgrep`, `fd`.
+- External deps (Homebrew): `tree-sitter-cli`, `ripgrep`, `fd`, `uv`. Rust via rustup (`~/.cargo`, env sourced in `~/.zshenv`).
 
 ## Verification (definition of done)
 - `nvim --headless +qa` prints nothing.
@@ -42,6 +46,8 @@ pyright, not basedpyright: Mason's basedpyright needs Python ≥3.10 and system 
   - snacks: errors for *disabled* modules (image tools, lazygit, notifier). `vim.ui.input/select` errors only appear headless (snacks sets them on UIEnter).
   - mason: optional runtimes (Go, cargo, PHP, Java, ...) not installed — not needed.
   - blink: "providers may show up as disabled" is informational.
+  - conform: "prettierd unavailable: Root directory not found" when cwd has no prettier config — by design.
+  - diffview: `hg` not executable — Mercurial not used.
 - Per-language attach test: open a file headless and print `vim.lsp.get_clients({bufnr=0})`.
 
 ## Keymaps (Space = leader; Shift-letter groups = language/tool)
@@ -56,8 +62,10 @@ pyright, not basedpyright: Mason's basedpyright needs Python ≥3.10 and system 
 | `<Space>c…` | cf format, cd line diagnostic, cs/cS symbols |
 | `]d` `[d` / `]h` `[h` | Diagnostics / git hunks |
 | `<Space>x…` | xx buffer diagnostics, xX workspace, xq quickfix |
-| `<Space>g…` | gg status, gc commit, gd diff, gl log, gs/gr stage/reset hunk, gp preview, gb blame, gB inline blame |
+| `<Space>g…` | gv review changes (diffview toggle), gh file history, gH repo history, gg status, gc commit, gd diff, gl log, gs/gr stage/reset hunk, gp preview, gb blame, gB inline blame |
+| `<Space>d…` / F-keys | dc/F5 start-continue, db/F9 breakpoint, dB conditional, do/F10 over, di/F11 into, dO/S-F11 out, dC run to cursor, dr restart, dl run last, dq stop, du UI, de evaluate, dw watch |
 | `<Space>F…` | Fr run, Fq quit, Fh hot reload, FR restart, Fd devices, Fe emulators, Fo outline, Fl log, Fp pub get, Fc all |
+| `<Space>R…` (Rust buffers) | Rr runnables, Rd debuggables, Rt testables, Rm expand macro, Re explain error, Rc Cargo.toml |
 | `<C-/>` / `<Space>t` | Toggle terminal |
 | `<Space>u…` | uf format-on-save, uw wrap, ur relnum, ud diagnostics, uh inlay hints |
 | `<Space>w` / `q` / `Q` | Save / quit window / quit all |
@@ -65,4 +73,4 @@ pyright, not basedpyright: Mason's basedpyright needs Python ≥3.10 and system 
 | `gc` | Comment (built-in) |
 
 ## Later
-- DAP debugging (Node, Python, Dart) — deliberately postponed.
+- VS Code-like workspaces (`.code-workspace` multi-root: `~/Development/backend`, `~/Development/meddi-mobile-apps`) — deliberately postponed.
