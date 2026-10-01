@@ -1,8 +1,10 @@
 -- gitsigns: per-hunk work while editing. fugitive: whole-repo work (status,
--- commit, log, diff) without leaving the editor; replaces lazygit.
+-- commit, log) without leaving the editor; replaces lazygit.
+-- diffview: VS Code-style review of everything changed since the last commit.
 vim.pack.add({
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/tpope/vim-fugitive",
+  "https://github.com/sindrets/diffview.nvim",
 })
 
 require("gitsigns").setup({
@@ -26,3 +28,10 @@ map("n", "<leader>gg", "<cmd>Git<CR>", { desc = "Git status (fugitive)" })
 map("n", "<leader>gc", "<cmd>Git commit<CR>", { desc = "Commit" })
 map("n", "<leader>gd", "<cmd>Gvdiffsplit<CR>", { desc = "Diff file vs index" })
 map("n", "<leader>gl", "<cmd>Git log --oneline --graph --decorate<CR>", { desc = "Log" })
+
+map("n", "<leader>gv", function()
+  -- One key to open and close: diffview tabs are easy to forget otherwise
+  if next(require("diffview.lib").views) then vim.cmd("DiffviewClose") else vim.cmd("DiffviewOpen") end
+end, { desc = "Review changes (diffview)" })
+map("n", "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", { desc = "File history" })
+map("n", "<leader>gH", "<cmd>DiffviewFileHistory<CR>", { desc = "Repo history" })
