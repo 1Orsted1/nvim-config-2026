@@ -2,7 +2,9 @@
 -- whatever the LSP ships, so output matches CI and teammates.
 vim.pack.add({ "https://github.com/stevearc/conform.nvim" })
 
-local prettier = { "prettierd" }
+-- Only with a prettier config in the project: otherwise prettier's defaults (and the
+-- LSP fallback) would rewrite every file you save in repos that never used it
+local prettier = { "prettierd", lsp_format = "never" }
 
 require("conform").setup({
   formatters_by_ft = {
@@ -15,10 +17,13 @@ require("conform").setup({
     lua = { "stylua" },
     rust = { "rustfmt" },
   },
+  formatters = { prettierd = { require_cwd = true } },
+  -- Set here, not in format_on_save, so the per-filetype "never" above can override it
+  default_format_opts = { lsp_format = "fallback" },
   -- Toggleable because some repos aren't formatted and a save would rewrite whole files
   format_on_save = function()
     if vim.g.disable_autoformat then return end
-    return { timeout_ms = 1000, lsp_format = "fallback" }
+    return { timeout_ms = 1000 }
   end,
 })
 
