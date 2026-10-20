@@ -29,6 +29,7 @@ Goal: as minimal as possible without losing features or comfort. Leader = Space.
 | git.lua | gitsigns (hunks) + fugitive (status/commit/log) + diffview (review changes, history) |
 | debug.lua | nvim-dap + nvim-dap-view (UI + inline values), js-debug, dap-python via uv; reads `.vscode/launch.json` from cwd |
 | rust.lua | rustaceanvim: owns rust-analyzer (rustup), clippy on save, runnables, codelldb debugging |
+| markdown.lua | render-markdown: in-buffer markdown rendering (headings, code, tables, checkboxes); latex off |
 | mini.lua | icons (+ devicons mock for nvim-tree), pairs, surround, ai, statusline |
 
 Servers: vtsls, eslint, pyright, ruff, lua_ls, jsonls, yamlls (Mason) + dartls (Flutter SDK) + rust-analyzer (rustup).
@@ -67,7 +68,7 @@ Mason can't install *any* pypi package (needs Python ≥3.10, system python3 is 
 | `<Space>F…` | Fr run, Fq quit, Fh hot reload, FR restart, Fd devices, Fe emulators, Fo outline, Fl log, Fp pub get, Fc all |
 | `<Space>R…` (Rust buffers) | Rr runnables, Rd debuggables, Rt testables, Rm expand macro, Re explain error, Rc Cargo.toml |
 | `<C-/>` / `<Space>t` | Toggle terminal |
-| `<Space>u…` | uf format-on-save, uw wrap, ur relnum, ud diagnostics, uh inlay hints |
+| `<Space>u…` | uf format-on-save, uw wrap, ur relnum, ud diagnostics, uh inlay hints, um markdown render |
 | `<Space>w` / `q` / `Q` | Save / quit window / quit all |
 | `sa` `sd` `sr` | Surround add/delete/replace (mini.surround) |
 | `gc` | Comment (built-in) |
